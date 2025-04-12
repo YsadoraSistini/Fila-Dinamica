@@ -19,15 +19,16 @@ public class FilaDinamica implements IEstruturaDinamica {
         if (estaVazia()) {
             this.primeiro = novo;
         } else {
-            No atual = primeiro;
+//            No atual = primeiro;
             this.ultimo.setProx(novo);
-
+            novo.setAnterior(this.ultimo);
 //            while (atual.getProx() != null){
 //                atual = atual.getProx();
 //            }
 //                atual.setProx(novo);
         }
         this.ultimo = novo;
+
         System.out.println("Conteudo Adicionado");
     }
 
@@ -48,8 +49,9 @@ public class FilaDinamica implements IEstruturaDinamica {
             return false;
         } else {
             No nova = this.primeiro;
-            this.primeiro = null;
+//            this.primeiro = null;
             primeiro = nova.getProx();
+            primeiro.setAnterior(null);
             System.out.println("Conteudo removido");
             return true;
         }
@@ -71,12 +73,49 @@ public class FilaDinamica implements IEstruturaDinamica {
     @Override
     public void removerTodasOcorrencias(String elemento) {
         if (estaVazia()) {
-            System.out.println("Lista vazia!");
+            System.out.println(SemElemento);
         } else {
+            No atual = this.primeiro;
+            while (atual != null) {//enquanto tiver elemento na lista
 
+                if (atual.getConteudo().equalsIgnoreCase(elemento)) {//verifica se o conteudo atual é igual ao passado
+                    No anterior = atual.getAnterior();
+                    No proximo = atual.getProx();
+//                    System.out.println(proximo.getConteudo());
+
+
+                    // Se o elemento passado for o primeiro nó da lista
+                    if (anterior == null) {
+                        this.primeiro = proximo;//O novo primeiro se torna o proximo
+
+                        if (proximo != null) { //se o prox conter conteudo
+                            proximo.setAnterior(null);//então o anterior dele recebe null
+                        }
+                    } else {
+                        anterior.setProx(proximo);//se não, o prox do anterior recebe o proximo do atual
+                    }
+
+                    // Se for o último nó da lista ou o único
+                    if (proximo == null) {
+                        this.ultimo = anterior;//o ultimo vai se tornar o anterior do atual porque o atual vai ser removido
+                        if (anterior != null) {//se o anterior do atual tiver conteudo
+                            anterior.setProx(null);//o no atual se torna null
+                        }
+                    } else {
+                        proximo.setAnterior(anterior);
+                    }
+
+                    System.out.println("Removido: " + atual.getConteudo());
+
+                    atual = proximo; // Faz o apontamento do próximo após remoção
+                } else {
+                    atual = atual.getProx(); // Continua se não for para remover
+                }
+            }
         }
     }
 
+    //VERIFICAR
     @Override
     public boolean estaCheia() {
         if (!estaVazia()) {
@@ -92,7 +131,9 @@ public class FilaDinamica implements IEstruturaDinamica {
     @Override
     public boolean estaVazia() {
         if (this.primeiro.getConteudo() == null) {
-            return true;
+//        if (this.primeiro == null) {
+
+        return true;
         } else {
             return false;
         }
@@ -107,7 +148,7 @@ public class FilaDinamica implements IEstruturaDinamica {
             No atual = this.primeiro;
 
             while (atual != null) {
-                if (atual.getConteudo().equals(elemento)) {
+                if (atual.getConteudo().equalsIgnoreCase(elemento)) {
                     System.out.println("Elemento: " + atual.getConteudo() + " encontrado");
                     return true;
                 }
@@ -130,7 +171,7 @@ public class FilaDinamica implements IEstruturaDinamica {
 
             while (atual.getProx() != null){
                 No proximo = atual.getProx();
-
+                //
                 if (atual.getConteudo().compareToIgnoreCase(proximo.getConteudo()) > 0){
 
                     String TrocaDeElementos = atual.getConteudo();
@@ -156,7 +197,7 @@ public class FilaDinamica implements IEstruturaDinamica {
 
             while (atual.getProx() != null){
                 No proximo = atual.getProx();
-
+                //tentar fazer sem o compareTo
                 if (atual.getConteudo().compareToIgnoreCase(proximo.getConteudo()) < 0){
 
                     String TrocaDeElementos = atual.getConteudo();
@@ -225,6 +266,8 @@ public class FilaDinamica implements IEstruturaDinamica {
                 System.out.println(atual.getConteudo());
                 atual = atual.getProx();
             }
+            System.out.println("==========================================");
+
         }
     }
 
@@ -233,7 +276,7 @@ public class FilaDinamica implements IEstruturaDinamica {
         if (estaVazia()) {
             System.out.println(SemElemento);
         } else {
-            System.out.println(this.primeiro.getConteudo());
+            System.out.println("Primeiro Elemento: "+this.primeiro.getConteudo());
         }
         return null;
     }
@@ -243,7 +286,7 @@ public class FilaDinamica implements IEstruturaDinamica {
         if (estaVazia()) {
             System.out.println(SemElemento);
         } else {
-            System.out.println(this.ultimo.getConteudo());
+            System.out.println("Último Elemento: "+this.ultimo.getConteudo());
         }
         return ultimo;
     }
