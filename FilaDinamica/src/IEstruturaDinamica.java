@@ -1,17 +1,18 @@
 public interface IEstruturaDinamica {
 
     void inserirElemento(String elemento);
-    void inserirSequencia(String... elementos);
+    void inserirSequencia(String elementos);
     boolean removerElemento();
-    void removerSequencia(Number... elementos);
+    void removerSequencia(int elementos);
     void removerTodasOcorrencias(String elemento);
-    boolean estaCheia();
     boolean estaVazia();
     boolean buscarElemento(String elemento);
+    void editarElemento(String elementoAntigo, String elementoNovo);
+
+    boolean estaCheia();
     void ordenarCrescente();
     void ordenarDecrescente();
     int quantidadeElementos();
-    void editarElemento(String elementoAntigo, String elementoNovo);
     void limpar();
     void exibir();
     No obterPrimeiroElemento();

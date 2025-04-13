@@ -4,12 +4,12 @@ import java.util.List;
 public class FilaDinamica implements IEstruturaDinamica {
     private No primeiro;
     private No ultimo;
-    String SemElemento = "Não existe elementos na lista";
+    String SemElemento = "Não existe pacientes na lista";
 
 
-    public FilaDinamica(String elemento) {
-        this.primeiro = new No(elemento);
-        this.ultimo = this.primeiro;
+    public FilaDinamica() {
+        this.primeiro = null;
+        this.ultimo = null;
     }
 
     @Override
@@ -18,28 +18,105 @@ public class FilaDinamica implements IEstruturaDinamica {
 
         if (estaVazia()) {
             this.primeiro = novo;
+            this.ultimo = novo;
+
         } else {
 //            No atual = primeiro;
-            this.ultimo.setProx(novo);
-            novo.setAnterior(this.ultimo);
 //            while (atual.getProx() != null){
 //                atual = atual.getProx();
 //            }
 //                atual.setProx(novo);
-        }
-        this.ultimo = novo;
+            this.ultimo.setProx(novo);
+            novo.setAnterior(this.ultimo);
+            this.ultimo = novo;
 
-        System.out.println("Conteudo Adicionado");
+        }
+
+        System.out.println("Paciente "+ultimo.getConteudo() +" agendada");
     }
 
-    @Override
-    public void inserirSequencia(String... elementos) {
-        String[] listaElementos = elementos;
+//    @Override
+//    public void inserirSequencia(String... elementos) {
+//        String[] listaElementos = elementos;
+//
+//        //percorre
+//        for (String elemento : listaElementos) {//cria a variavel elemento, ai para cada elemento dentro de listaElementos, faça algo....
+//            inserirElemento(elemento);
+//        }
+//    }
 
-        //percorre
-        for (String elemento : listaElementos) {//cria a variavel elemento, ai para cada elemento dentro de listaElementos, faça algo....
-            inserirElemento(elemento);
+    @Override
+    public void inserirSequencia(String elementos) {//"isa,bely,joao"
+
+        int indiceInicioProxString = 0; // Marca o início de cada palavra dentro da string | 	Índice de onde começa a próxima palavra
+
+        // Percorre a string inteira, caractere por caractere
+        //i - indice atual
+        //Ex: foi passado uma string com 13 elementos
+        //ent vai do 0 ao 12
+        for (int i = 0; i < elementos.length(); i++) {
+            //Percorre até achar uma virgula
+            if (elementos.charAt(i) == ',') { // Se achar uma vírgula
+
+                String elemento = ""; // Variável temporária para montar a palavra | String montada
+
+                // Percorre do início até a vírgula, montando a palavra manualmente
+                for (int j = indiceInicioProxString; j < i; j++) {
+                    // Esse for pega cada letra da posição inicioSubstring até i
+                    // (onde está a vírgula) e vai montando a palavra caractere por caractere.
+                    //: se inicioSubstring = 0 e i = 3
+                    //→ ele monta "isa" (letras de 0 a 2)
+                    elemento += elementos.charAt(j); // Vai somando letra por letra
+                }
+
+                elemento = removerEspacosLaterais(elemento);
+
+                //Chama o método que insere a palavra montada na fila. (O metodo de cima)
+                inserirElemento(elemento); // Insere a palavra na fila
+
+                indiceInicioProxString = i + 1; // Move o início para depois da vírgula
+                //ou seja, Se i = 3, agora indiceInicioProxString = 4
+                //Próxima palavra começará a ser capturada a partir de elementos.charAt(4) = 'b'
+            }
         }
+
+        // Após o loop, ainda falta o último elemento (que não termina com vírgula)
+        String ultimo = ""; //Vai captura a ultima palavra
+
+        //Pega as letras do final da última vírgula até o fim da string
+        for (int j = indiceInicioProxString; j < elementos.length(); j++) {
+            //Exemplo (inicioSubstring = 9)
+            ultimo += elementos.charAt(j);//então vai montar joao
+        }
+
+        // Se o último não estiver vazio, insere também
+        if (ultimo.length() > 0) {
+            ultimo = removerEspacosLaterais(ultimo); // remove os espaços antes de inserir
+            inserirElemento(ultimo);
+        }
+    }
+
+    public String removerEspacosLaterais(String texto) {
+        int inicio = 0;
+        int fim = texto.length() - 1;
+
+        // Avança o índice de início até o primeiro caractere não-espaço
+        while (inicio <= fim && texto.charAt(inicio) == ' ') {
+            inicio++;
+        }
+
+        // Regride o índice de fim até o último caractere não-espaço
+        while (fim >= inicio && texto.charAt(fim) == ' ') {
+            fim--;
+        }
+
+        // Constrói a nova string "limpa"
+        String resultado = "";
+        for (int i = inicio; i <= fim; i++) {
+            resultado += texto.charAt(i);
+        }
+
+        return resultado;
     }
 
     @Override
@@ -49,23 +126,40 @@ public class FilaDinamica implements IEstruturaDinamica {
             return false;
         } else {
             No nova = this.primeiro;
-//            this.primeiro = null;
-            primeiro = nova.getProx();
-            primeiro.setAnterior(null);
-            System.out.println("Conteudo removido");
+            // Se só tem UM paciente na fila
+            if (this.primeiro == this.ultimo) {
+                this.primeiro = null;
+                this.ultimo = null;
+                System.out.println("Paciente chamado para consulta");
+
+            } else {
+                System.out.println("Paciente chamado para consulta: " + primeiro.getConteudo());
+
+                // Caso tenha mais de um paciente
+                this.primeiro = nova.getProx();
+                this.primeiro.setAnterior(null);
+            }
+
             return true;
         }
     }
 
     @Override
-    public void removerSequencia(Number... elementos) {
-        Number[] listaElementos = elementos;
-        if (estaVazia()) {
-            System.out.println(SemElemento);
+    public void removerSequencia(int elementos) {
+
+        int removidos = 0;
+
+        // Enquanto houver pacientes na fila e não atingiu a quantidade desejada
+        while (removidos < elementos && !estaVazia()) {
+            removerElemento(); // Remove o primeiro da fila
+            removidos++;
+        }
+
+        // Caso o usuário peça para remover mais do que há na fila
+        if (removidos < elementos) {
+            System.out.println(removidos + " pacientes estavam na fila.");
         } else {
-            for (Number elemento : listaElementos) {
-                removerElemento();
-            }
+            System.out.println("Todos os " + elementos + " pacientes foram chamados.");
         }
     }
 
@@ -74,14 +168,17 @@ public class FilaDinamica implements IEstruturaDinamica {
     public void removerTodasOcorrencias(String elemento) {
         if (estaVazia()) {
             System.out.println(SemElemento);
-        } else {
+            return;
+        }
             No atual = this.primeiro;
+
             while (atual != null) {//enquanto tiver elemento na lista
+                No proximo = atual.getProx();
+
 
                 if (atual.getConteudo().equalsIgnoreCase(elemento)) {//verifica se o conteudo atual é igual ao passado
+//                    System.out.println("Executando..");
                     No anterior = atual.getAnterior();
-                    No proximo = atual.getProx();
-//                    System.out.println(proximo.getConteudo());
 
 
                     // Se o elemento passado for o primeiro nó da lista
@@ -90,28 +187,35 @@ public class FilaDinamica implements IEstruturaDinamica {
 
                         if (proximo != null) { //se o prox conter conteudo
                             proximo.setAnterior(null);//então o anterior dele recebe null
+                        }else { //se for o ultimo elemento da lista
+                            this.ultimo = null; // Lista fica vazia após remoção do único elemento
                         }
-                    } else {
-                        anterior.setProx(proximo);//se não, o prox do anterior recebe o proximo do atual
                     }
 
-                    // Se for o último nó da lista ou o único
-                    if (proximo == null) {
+                    // Se for o último nó da lista
+                    else if (proximo == null) {
                         this.ultimo = anterior;//o ultimo vai se tornar o anterior do atual porque o atual vai ser removido
-                        if (anterior != null) {//se o anterior do atual tiver conteudo
+                        //se o anterior do atual tiver conteudo
                             anterior.setProx(null);//o no atual se torna null
-                        }
-                    } else {
+                    }
+                    // Nó do meio
+                    else {
+                        anterior.setProx(proximo);
                         proximo.setAnterior(anterior);
                     }
 
-                    System.out.println("Removido: " + atual.getConteudo());
+                    System.out.println("Paciente chamado para consulta: " + atual.getConteudo());
 
-                    atual = proximo; // Faz o apontamento do próximo após remoção
-                } else {
-                    atual = atual.getProx(); // Continua se não for para remover
+//                    atual = proximo; // Faz o apontamento do próximo após remoção
                 }
-            }
+                    atual = proximo; // Continua se não for para remover
+//                if (atual != null) {
+//                    System.out.println("Novo atual " + atual.getConteudo());
+//                }else {
+//                    System.out.println("Novo atual " + atual);
+//
+//                }
+
         }
     }
 
@@ -130,8 +234,7 @@ public class FilaDinamica implements IEstruturaDinamica {
 
     @Override
     public boolean estaVazia() {
-        if (this.primeiro.getConteudo() == null) {
-//        if (this.primeiro == null) {
+        if (this.primeiro == null) {
 
         return true;
         } else {
@@ -149,12 +252,12 @@ public class FilaDinamica implements IEstruturaDinamica {
 
             while (atual != null) {
                 if (atual.getConteudo().equalsIgnoreCase(elemento)) {
-                    System.out.println("Elemento: " + atual.getConteudo() + " encontrado");
+                    System.out.println("Paciente: " + atual.getConteudo() + " encontrado(a)");
                     return true;
                 }
                 atual = atual.getProx();
             }
-            System.out.println("Conteúdo não encontrado!");
+            System.out.println("Paciente não encontrado!");
             return false;
 
         }
@@ -229,7 +332,7 @@ public class FilaDinamica implements IEstruturaDinamica {
         if (buscarElemento(elementoAntigo)) {
             No atual = this.primeiro;
             while (atual != null) {
-                if (atual.getConteudo() == elementoAntigo) {
+                if (atual.getConteudo().equalsIgnoreCase(elementoAntigo)) {
                     atual.setConteudo(elementoNovo);
                     System.out.println("Atualizado para: " + atual.getConteudo());
                     return;
@@ -241,17 +344,26 @@ public class FilaDinamica implements IEstruturaDinamica {
     }
 
 
+
     @Override
     public void limpar() {
         if (estaVazia()) {
             System.out.println(SemElemento);
         } else {
             No atual = this.primeiro;
+
             while (atual != null) {
-                atual.setConteudo(null);
-                atual = atual.getProx();
+                No proximo = atual.getProx(); // Guarda o próximo nó
+                atual.setAnterior(null);      // Remove ligação com o anterior
+                atual.setProx(null);          // Remove ligação com o próximo
+                atual = proximo;              // Avança na lista
             }
-            System.out.println("Ocorrências apagadas");
+
+            // Zera os ponteiros principais da fila
+            this.primeiro = null;
+            this.ultimo = null;
+
+            System.out.println("Todos os pacientes foram removidos da fila.");
 
         }
     }
