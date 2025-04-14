@@ -374,6 +374,8 @@ public class FilaDinamica implements IEstruturaDinamica {
             }
 
         }while (troca);
+        System.out.println("Fila em ordenação crescente:");
+        exibir();
     }
 
     @Override
@@ -400,6 +402,8 @@ public class FilaDinamica implements IEstruturaDinamica {
             }
 
         }while (troca);
+        System.out.println("Fila em ordenação decrescente:");
+        exibir();
     }
 
 }

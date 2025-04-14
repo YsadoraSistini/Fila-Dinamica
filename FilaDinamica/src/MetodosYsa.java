@@ -31,25 +31,6 @@ public class MetodosYsa implements IEstruturaDinamicaYsa{
     }
 
     @Override
-    public void limpar(){
-        if (estaVazia()){
-            System.out.println(SemElemento);
-        } else {
-            No atual = this.primeiro; //Atual recebe o primeiro elemento (Para percorrer a fila corretamente)
-            while (atual != null) {
-                No proximo = atual.getProx(); // Guarda o próximo nó
-                atual.setAnterior(null);      // Remove ligação com o anterior
-                atual.setProx(null);          // Remove ligação com o próximo
-                atual = proximo;              // Avança na lista
-            }
-            // Zera os ponteiros principais da fila
-            this.primeiro = null;
-            this.ultimo = null;
-        }
-        System.out.println("A Fila foi limpa");
-    }
-
-    @Override
     public void exibir(){
         if (estaVazia()){
             System.out.println(SemElemento);
@@ -61,6 +42,7 @@ public class MetodosYsa implements IEstruturaDinamicaYsa{
             }
         }
     }
+
 
     @Override
     public int quantidadeElementos() {
@@ -97,6 +79,26 @@ public class MetodosYsa implements IEstruturaDinamicaYsa{
     }
 
     @Override
+    public void limpar(){
+        if (estaVazia()){
+            System.out.println(SemElemento);
+        } else {
+            No atual = this.primeiro; //Atual recebe o primeiro elemento (Para percorrer a fila corretamente)
+            while (atual != null) {
+                No proximo = atual.getProx(); // Guarda o próximo nó
+                atual.setAnterior(null);      // Remove ligação com o anterior
+                atual.setProx(null);          // Remove ligação com o próximo
+                atual = proximo;              // Avança na lista
+            }
+            // Zera os ponteiros principais da fila
+            this.primeiro = null;
+            this.ultimo = null;
+        }
+        System.out.println("A Fila foi limpa");
+    }
+
+
+    @Override
     public void ordenarCrescente() {
         if (estaVazia() || this.primeiro.getProx() == null) return;
 
@@ -121,6 +123,8 @@ public class MetodosYsa implements IEstruturaDinamicaYsa{
             }
 
         }while (troca);
+        System.out.println("Fila em ordenação Crescente:");
+        exibir();
     }
 
     @Override
@@ -147,6 +151,8 @@ public class MetodosYsa implements IEstruturaDinamicaYsa{
             }
 
         }while (troca);
+        System.out.println("Fila em ordenação Decrescente:");
+        exibir();
     }
 
 }
